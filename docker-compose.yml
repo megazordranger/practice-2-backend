@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  db:
+    image: circleci/postgres:12.9
+    restart: always
+    environment:
+      POSTGRES_USER: johndoe
+      POSTGRES_PASSWORD: randompassword
+      POSTGRES_DB: example
+    ports:
+      - 5432:5432
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    command: postgres -c listen_addresses='*'
+    networks:
+      - app_net
+
+  web: &web
+    volumes:
+      - tmp-dir:/tmp
+    depends_on:
+      - db
+    links:
+      - "db:database"
+    ports:
+      - "4000:4000"
+    networks:
+      - app_net
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://johndoe:randompassword@database:5432/example
+
+volumes:
+  database-data:
+  tmp-dir:
+    driver: local
+
+networks:
+  app_net:
+    driver: bridge
