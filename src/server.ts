@@ -8,14 +8,13 @@ const start = async () => {
 
   const { url } = await startStandaloneServer(server, {
     context: createContext,
-    listen: { port: 4000 }
+    listen: { port: 4000 },
   })
 
   console.log(`\
   🚀 Server ready at: ${url}
   ⭐️ See sample queries: http://pris.ly/e/ts/graphql-nexus#using-the-graphql-api
   `)
-
 }
 
 start()
